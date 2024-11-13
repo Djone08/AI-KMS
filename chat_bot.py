@@ -2,42 +2,36 @@ import streamlit as st
 from google import generativeai as genai
 
 
-with st.sidebar:
-    openai_api_key = st.text_input("Google API Key", key="chatbot_api_key", type="password")
-    "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
-    "[View the source code](https://github.com/streamlit/llm-examples/blob/main/Chatbot.py)"
-    "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)"
+# with st.sidebar:
+#     '[Get an Gemini API key](https://aistudio.google.com/apikey)'
+#     '[View the source code](https://github.com/Djone08/AI-KMS)'
 
-st.title("💬 Chatbot")
+st.title('💬 Chatbot')
 
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+if 'messages' not in st.session_state:
+    st.session_state['messages'] = [{'role': 'model', 'parts': 'How can I help you?'}]
 
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    st.chat_message(msg['role'] if msg['role']=='user' else 'ai').write(msg['parts'])
 
 if prompt := st.chat_input():
-    if not openai_api_key:
-        if st.secrets.GOOGLE_API_KEY:
-            st.info(f'Please set "{st.secrets.GOOGLE_API_KEY}" as Google API Key to Continue')
-        else:
-            st.info("Please add your Google API key to continue.")
-        st.stop()
 
-    # client = OpenAI(api_key=openai_api_key)
     genai.configure(api_key=st.secrets.GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-pro')
-    client = model.start_chat(history=[])
+    chat = model.start_chat(history=st.session_state['messages'])
+    print(st.session_state.messages)
     
 
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message("user").write(prompt)
-    # response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
-    # response = client.send_message(prompt, stream=True)
-    response = model.generate_content(prompt, stream=True)
-    # print(response.text)
-    for chunk in response:
-        msg = chunk.text
-        # msg = response.choices[0].message.content
-        st.session_state.messages.append({"role": "assistant", "content": msg})
-        st.chat_message("assistant").write(msg)
+    st.session_state.messages.append({'role': 'user', 'parts': prompt})
+    st.chat_message('user').write(prompt)
+    response = chat.send_message(prompt, stream=True)
+    # response = model.generate_content(prompt, stream=True)
+    with st.chat_message('ai'):
+        for chunk in response:
+            msg = chunk.text
+            st.write(msg)
+        try:
+            st.session_state.messages.append({'role': 'model', 'parts': response.text})
+        except ValueError:
+            print('='*100)
+            print(response)
