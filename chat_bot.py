@@ -14,6 +14,10 @@ if 'messages' not in st.session_state:
 for msg in st.session_state.messages:
     st.chat_message(msg['role'] if msg['role']=='user' else 'ai').write(msg['parts'])
 
+
+uploaded_file = st.file_uploader('Upload a file', type=('txt', 'md', 'pdf', 'xlxs'), accept_multiple_files=True)
+
+
 if prompt := st.chat_input():
 
     genai.configure(api_key=st.secrets.GOOGLE_API_KEY)
