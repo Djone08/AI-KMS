@@ -12,7 +12,7 @@ def get_docs(st_files: list[UploadedFile], dir_path: str | None='temp_upload_fil
     if os.path.isdir(dir_path):
         os.mkdir(dir_path)
     for _file in st_files:
-        f_path = fr'{dir_path}/{_file.name}'
+        f_path = fr'{dir_path}\{_file.name}'
         with open(f_path, 'wb')as f:
             f.write(_file.read())
             f.close()
