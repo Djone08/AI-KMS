@@ -49,7 +49,7 @@ for msg in st.session_state['messages']:
             st.write(part.text)
     # st.chat_message(msg.role if msg.role =='user' else 'ai').write(msg.parts)
 
-llm = st.session_state['llm']
+# llm = st.session_state['llm']
 chat = st.session_state['chat']
 docs = st.session_state.get('docs')
     
