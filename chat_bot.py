@@ -19,8 +19,8 @@ def get_docs(st_files: list[UploadedFile], dir_path: str | None='temp_upload_fil
         _docs.append(genai.upload_file(f_path))
         if clear_files:
             os.remove(f_path)
-    if clear_files:
-        os.removedirs(dir_path)
+    # if clear_files:
+    #     os.removedirs(dir_path)
     return _docs
 
 
