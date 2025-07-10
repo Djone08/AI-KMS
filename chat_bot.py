@@ -19,7 +19,7 @@ def get_docs(st_files: list[UploadedFile], dir_path: str | None='temp_upload_fil
             _docs.append(genai.upload_file(f_path))
         except ValueError as e:
             st.error(f'''Unsupported File Type Please Remove (`{_file.name}`)
-                     Error:
+                     \nError:
                      
                      {e}''', icon=':material/error:')
             print(type(e))
@@ -28,11 +28,11 @@ def get_docs(st_files: list[UploadedFile], dir_path: str | None='temp_upload_fil
                 os.remove(f_path)
     return _docs
 
+
 os.environ["GOOGLE_API_KEY"] = st.secrets.GOOGLE_API_KEY
 genai.configure(api_key=st.secrets.GOOGLE_API_KEY)
 
 st.title('💬 Chatbot')
-
 
 if 'chat' not in st.session_state:
     model = genai.GenerativeModel('gemini-1.5-flash')
